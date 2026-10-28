@@ -1,0 +1,281 @@
+/**
+ * PDF Viewer and PDF Library blocks: editor previews and sidebar bits.
+ */
+
+/* Viewer preview */
+.upve-ed-frame {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	border: 1px solid rgba(15, 23, 42, .12);
+	border-radius: 10px;
+	background: #e9edf2;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	font-size: 13px;
+	color: #1f2937;
+}
+
+.upve-ed-bar {
+	display: flex;
+	flex: none;
+	align-items: center;
+	gap: 10px;
+	height: 46px;
+	padding: 0 12px;
+	border-bottom: 1px solid rgba(15, 23, 42, .12);
+	background: #fff;
+}
+
+.upve-ed-group {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	color: #374151;
+}
+
+.upve-ed-nav {
+	margin: 0 auto;
+}
+
+.upve-ed-end {
+	margin-left: auto;
+	gap: 12px;
+}
+
+.upve-ed-nav + .upve-ed-group {
+	margin-right: auto;
+}
+
+.upve-ed-page,
+.upve-ed-zoom {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 34px;
+	height: 28px;
+	padding: 0 8px;
+	border: 1px solid rgba(15, 23, 42, .12);
+	border-radius: 6px;
+	background: #e9edf2;
+}
+
+.upve-ed-stage {
+	display: flex;
+	flex: 1;
+	align-items: flex-start;
+	justify-content: center;
+	min-height: 0;
+	padding: 18px;
+	overflow: hidden;
+}
+
+.upve-ed-frame.is-book .upve-ed-stage {
+	align-items: center;
+}
+
+.upve-ed-page-img {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: min(420px, 70%);
+	aspect-ratio: 3 / 4;
+	overflow: hidden;
+	background: #fff;
+	box-shadow: 0 6px 20px rgba(15, 23, 42, .14);
+}
+
+.upve-ed-page-img img {
+	display: block;
+	width: 100%;
+	height: auto;
+	align-self: flex-start;
+}
+
+.upve-ed-spread {
+	display: flex;
+	width: min(560px, 90%);
+}
+
+.upve-ed-spread .upve-ed-page-img {
+	width: 50%;
+}
+
+.upve-ed-spread .upve-ed-page-img.is-empty {
+	background: transparent;
+	box-shadow: none;
+}
+
+.upve-ed-blank {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	color: #2563eb;
+}
+
+.upve-ed-badge {
+	position: absolute;
+	left: 12px;
+	bottom: 12px;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	max-width: calc(100% - 24px);
+	padding: 6px 12px;
+	overflow: hidden;
+	border-radius: 999px;
+	background: rgba(17, 24, 39, .85);
+	color: #fff;
+	font-weight: 600;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.upve-ed-badge svg {
+	flex: none;
+	width: 15px;
+	height: 15px;
+}
+
+/* Popup triggers */
+.upve-ed-button-wrap {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px;
+}
+
+.upve-ed-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 9px;
+	padding: 12px 20px;
+	border-radius: 10px;
+	background: #2563eb;
+	color: #fff;
+	font-weight: 600;
+}
+
+.upve-ed-tag {
+	display: inline-block;
+	padding: 3px 9px;
+	border-radius: 999px;
+	background: #eef2ff;
+	color: #3730a3;
+	font-size: 12px;
+	font-weight: 600;
+	vertical-align: middle;
+}
+
+.upve-ed-thumb {
+	display: grid;
+	gap: 8px;
+	max-width: 240px;
+}
+
+.upve-ed-cover {
+	display: block;
+	aspect-ratio: 3 / 4;
+	overflow: hidden;
+	border: 1px solid rgba(15, 23, 42, .12);
+	border-radius: 8px;
+	background: #fff;
+}
+
+.upve-ed-cover img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: top;
+}
+
+/* Sidebar */
+.upve-ed-docinfo {
+	margin-top: 0;
+	overflow-wrap: anywhere;
+}
+
+.upve-ed-note {
+	color: #757575;
+	font-size: 12px;
+}
+
+.upve-ed-url {
+	display: grid;
+	gap: 8px;
+	margin-bottom: 16px;
+}
+
+.upve-ed-url .components-button {
+	justify-self: start;
+}
+
+.upve-ed-roles {
+	display: grid;
+	gap: 8px;
+	margin: -4px 0 16px;
+	padding: 10px 12px;
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+}
+
+.upve-ed-protect {
+	margin-top: 8px;
+	padding-top: 12px;
+	border-top: 1px solid #e0e0e0;
+}
+
+.upve-ed-status {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 4px;
+	color: #50575e;
+}
+
+.upve-ed-status .components-spinner {
+	margin: 0 4px 0 0;
+}
+
+.block-editor-block-inspector .components-base-control + .components-base-control,
+.block-editor-block-inspector .components-panel__body .components-select-control + .components-select-control {
+	margin-top: 12px;
+}
+
+.upve-ed-list {
+	margin: 12px 0 16px;
+	padding: 0;
+	list-style: none;
+}
+
+.upve-ed-list li {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	margin: 0;
+	padding: 4px 0;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.upve-ed-list-title {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.upve-ed-list .components-button {
+	min-width: 30px;
+	height: 30px;
+	padding: 0;
+	justify-content: center;
+}
+
+/* The library preview is the real output; keep its links from navigating. */
+.upve-ed-library a {
+	pointer-events: none;
+}
