@@ -79,7 +79,7 @@
 	align-items: center;
 	justify-content: center;
 	width: min(420px, 70%);
-	aspect-ratio: 3 / 4;
+	aspect-ratio: 17 / 22;
 	overflow: hidden;
 	background: #fff;
 	box-shadow: 0 6px 20px rgba(15, 23, 42, .14);
@@ -88,8 +88,9 @@
 .upve-ed-page-img img {
 	display: block;
 	width: 100%;
-	height: auto;
-	align-self: flex-start;
+	height: 100%;
+	object-fit: cover;
+	object-position: top;
 }
 
 .upve-ed-spread {

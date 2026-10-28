@@ -187,7 +187,7 @@
 						return Object.assign( {}, prev, { working: true } );
 					} );
 
-					window.upvePrepare.prepare( { id: doc.id, url: doc.url, src: doc.src }, { maxPages: 600 } ).then( function () {
+					window.upvePrepare.prepare( { id: doc.id, url: doc.url, src: doc.src, fb: doc.fb }, { maxPages: 600 } ).then( function () {
 						return fetchDoc( a, true );
 					} ).then( function ( fresh ) {
 						if ( live ) {
@@ -206,7 +206,7 @@
 					} );
 				} else if ( ! doc.cover && window.upvePrepare ) {
 					// No saved cover and no right to save one: draw it just for the preview.
-					window.upvePrepare.open( doc.src ).then( function ( pdf ) {
+					window.upvePrepare.open( doc.src, doc.fb ).then( function ( pdf ) {
 						return window.upvePrepare.cover( pdf, 600 );
 					} ).then( function ( data ) {
 						if ( live ) {
@@ -363,7 +363,7 @@
 				return Object.assign( {}, prev, { working: true, error: '' } );
 			} );
 
-			window.upvePrepare.prepare( { id: doc.id, url: doc.url, src: doc.src } ).then( function () {
+			window.upvePrepare.prepare( { id: doc.id, url: doc.url, src: doc.src, fb: doc.fb } ).then( function () {
 				return fetchDoc( a, true );
 			} ).then( function ( fresh ) {
 				setState( function ( prev ) {
@@ -729,7 +729,7 @@
 							working[ 1 ]( true );
 						}
 
-						return window.upvePrepare.prepare( { id: doc.id, src: doc.src }, { maxPages: 600 } ).then( function () {
+						return window.upvePrepare.prepare( { id: doc.id, src: doc.src, fb: doc.fb }, { maxPages: 600 } ).then( function () {
 							changed = true;
 							delete docCache[ key ];
 						} );

@@ -53,6 +53,8 @@
 /* Root ---------------------------------------------------------------------- */
 
 .upve {
+	/* Scrolling inside the viewer must never move the page (scroll anchoring). */
+	overflow-anchor: none;
 	position: relative;
 	width: 100%;
 	max-width: var(--upve-w, 100%);
@@ -864,8 +866,8 @@ span.upve--lightbox {
 }
 
 .upve-wm-diagonal span {
-	font-size: calc(var(--total-scale-factor, var(--scale-factor, 1)) * 54px);
-	transform: rotate(-38deg);
+	font-size: calc(var(--total-scale-factor, var(--scale-factor, 1)) * 40px);
+	transform: rotate(-52deg);
 }
 
 .upve-wm-tiled {
@@ -886,7 +888,7 @@ span.upve--lightbox {
 }
 
 .upve-wm-footer span {
-	padding-bottom: calc(var(--total-scale-factor, var(--scale-factor, 1)) * 16px);
+	padding-bottom: 2.2%;
 	font-size: calc(var(--total-scale-factor, var(--scale-factor, 1)) * 13px);
 	font-weight: 600;
 }
@@ -1137,6 +1139,25 @@ html.upve-lock body {
 	right: 10px;
 }
 
+/* One page at a time (phones): arrows under the page */
+.upve-book:not(.is-double) {
+	padding-bottom: 60px;
+}
+
+.upve .upve-book:not(.is-double) .upve-book-nav {
+	top: auto;
+	bottom: 10px;
+	transform: none;
+}
+
+.upve-book:not(.is-double) .upve-book-prev {
+	left: calc(50% - 50px);
+}
+
+.upve-book:not(.is-double) .upve-book-next {
+	right: calc(50% - 50px);
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.upve-book-inner,
 	.upve-turn {
@@ -1198,7 +1219,7 @@ html.upve-lock body {
 	white-space: nowrap;
 }
 
-.upve-lightbox .upve-btn {
+.upve-lightbox-head .upve-btn {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;

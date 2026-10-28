@@ -3,7 +3,7 @@
  * Plugin Name:       Ultimate PDF Viewer and Embedder
  * Plugin URI:        https://www.contentpowered.com
  * Description:       Show PDFs right on your pages in a fast, mobile-friendly viewer, with flipbooks, lightboxes, search, protection and read tracking.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 5.8
  * Requires PHP:      7.2
  * Author:            Content Powered

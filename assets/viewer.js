@@ -282,6 +282,39 @@
 		return node;
 	}
 
+	/** Size the overlay text to its page, so long text never runs off the edges. */
+	function fitWatermark( node, wm ) {
+		const w = node.clientWidth;
+		const hgt = node.clientHeight;
+		const spans = node.querySelectorAll( 'span' );
+
+		if ( ! w || ! hgt || ! spans.length ) {
+			return;
+		}
+
+		const probe = spans[ 0 ];
+
+		probe.style.fontSize = '100px';
+
+		const natural = probe.scrollWidth || 1;
+		let size;
+
+		if ( wm.l === 'diagonal' ) {
+			size = Math.min( 100 * Math.hypot( w, hgt ) * 0.78 / natural, hgt / 9 );
+			spans.forEach( ( span ) => {
+				span.style.transform = 'rotate(' + ( -Math.atan2( hgt, w ) * 180 / Math.PI ) + 'deg)';
+			} );
+		} else if ( wm.l === 'tiled' ) {
+			size = Math.min( 100 * ( w / 3 ) * 0.8 / natural, hgt / 30 );
+		} else {
+			size = Math.min( 100 * w * 0.8 / natural, hgt / 60 );
+		}
+
+		spans.forEach( ( span ) => {
+			span.style.fontSize = Math.max( 6, size ).toFixed( 1 ) + 'px';
+		} );
+	}
+
 	/** The same watermark drawn onto a canvas (print, flipbook, thumbnails). */
 	function drawWatermark( ctx, w, hgt, wm ) {
 		const text = watermarkText( wm );
@@ -634,6 +667,26 @@
 			} );
 			this.links.setViewer( this.pdfViewer );
 
+			// PDF.js moves to a search match with the browser's scrollIntoView(),
+			// which also scrolls the web page around the viewer. Scroll only the
+			// viewer, and keep focusing from scrolling the page too.
+			this.finder.scrollMatchIntoView = ( { element = null, pageIndex = -1, matchIndex = -1 } = {} ) => {
+				const f = this.finder;
+
+				if ( ! element || ! f._scrollMatches || matchIndex !== f._selected.matchIdx || pageIndex !== f._selected.pageIdx ) {
+					return;
+				}
+
+				f._scrollMatches = false;
+
+				const box = this.scroller.getBoundingClientRect();
+				const hit = element.getBoundingClientRect();
+
+				this.scroller.scrollTop += hit.top - box.top - Math.min( 80, box.height / 4 );
+				this.scroller.scrollLeft += hit.left + hit.width / 2 - ( box.left + box.width / 2 );
+			};
+			this.pdfViewer.focus = () => this.scroller.focus( { preventScroll: true } );
+
 			this.bus.on( 'pagesinit', () => {
 				this.pdfViewer.currentScaleValue = this.scaleValue( cfg.zoom );
 
@@ -655,11 +708,16 @@
 					this.viewed();
 				}
 
-				if ( this.wm && evt.source && evt.source.div && ! evt.source.div.querySelector( '.upve-wm' ) ) {
-					const node = watermarkNode( this.wm );
+				if ( this.wm && evt.source && evt.source.div ) {
+					const old = evt.source.div.querySelector( '.upve-wm' );
+					const node = old || watermarkNode( this.wm );
 
 					if ( node ) {
-						evt.source.div.appendChild( node );
+						if ( ! old ) {
+							evt.source.div.appendChild( node );
+						}
+
+						fitWatermark( node, this.wm );
 					}
 				}
 			} );
@@ -1350,6 +1408,8 @@
 					role: 'listitem',
 					'data-page': String( n ),
 					'aria-label': fmt( t( 'pageN' ), n ),
+					// A click shouldn't focus (and so scroll the web page to) the thumbnail.
+					onmousedown: ( e ) => e.preventDefault(),
 					onclick: () => {
 						this.goTo( n );
 
@@ -1833,9 +1893,10 @@
 		/** Two pages side by side when there's room, else one. */
 		layout() {
 			const stage = this.v.stage;
-			const w = Math.max( 100, stage.clientWidth - 96 );
-			const hgt = Math.max( 100, stage.clientHeight - 40 );
 			const double = this.count > 1 && stage.clientWidth >= 640;
+			// One page (phones): the arrows sit under the page, so it can use the full width.
+			const w = Math.max( 100, stage.clientWidth - ( double ? 96 : 24 ) );
+			const hgt = Math.max( 100, stage.clientHeight - ( double ? 40 : 76 ) );
 			let pw = double ? w / 2 : w;
 			let ph = pw * this.ratio;
 

@@ -605,17 +605,19 @@ final class Ultimate_PDF_Viewer_Embedder_Rest {
 	/**
 	 * Where an editor's browser can load a document from.
 	 *
-	 * @param string $source Source string.
+	 * @param string $source  Source string.
+	 * @param bool   $through Always go through the site (with a ticket), even
+	 *                        when the file has a public address.
 	 * @return string
 	 */
-	public static function editor_src( $source ) {
+	public static function editor_src( $source, $through = false ) {
 		list( $type, $value ) = Ultimate_PDF_Viewer_Embedder_Docs::parse( $source );
 
-		if ( 'a' === $type && ! Ultimate_PDF_Viewer_Embedder_Protect::is_protected( $value ) ) {
+		if ( ! $through && 'a' === $type && ! Ultimate_PDF_Viewer_Embedder_Protect::is_protected( $value ) ) {
 			return (string) wp_get_attachment_url( $value );
 		}
 
-		if ( 'u' === $type && Ultimate_PDF_Viewer_Embedder_Remote::is_same_site( $value ) ) {
+		if ( ! $through && 'u' === $type && Ultimate_PDF_Viewer_Embedder_Remote::is_same_site( $value ) ) {
 			return $value;
 		}
 
@@ -635,6 +637,24 @@ final class Ultimate_PDF_Viewer_Embedder_Rest {
 			),
 			rest_url( self::NS . '/file' )
 		);
+	}
+
+	/**
+	 * A second link for files this editor can edit, used when the direct
+	 * address fails in the browser (a CDN without CORS, a folder the web
+	 * server guards).
+	 *
+	 * @param string $source Source string.
+	 * @return string
+	 */
+	private static function editor_fallback( $source ) {
+		list( $type, $value ) = Ultimate_PDF_Viewer_Embedder_Docs::parse( $source );
+
+		if ( 'a' !== $type || Ultimate_PDF_Viewer_Embedder_Protect::is_protected( $value ) || ! current_user_can( 'edit_post', $value ) ) {
+			return '';
+		}
+
+		return self::editor_src( $source, true );
 	}
 
 	/**
@@ -659,6 +679,7 @@ final class Ultimate_PDF_Viewer_Embedder_Rest {
 				'id'         => 'a' === $type ? $value : 0,
 				'url'        => 'u' === $type ? $value : '',
 				'src'        => self::editor_src( $source ),
+				'fb'         => self::editor_fallback( $source ),
 				'title'      => Ultimate_PDF_Viewer_Embedder_Docs::title( $source ),
 				'filename'   => Ultimate_PDF_Viewer_Embedder_Docs::filename( $source ),
 				'pages'      => $row ? (int) $row['pages'] : 0,
@@ -783,6 +804,7 @@ final class Ultimate_PDF_Viewer_Embedder_Rest {
 				'url'      => 'u' === $type ? $value : '',
 				'title'    => Ultimate_PDF_Viewer_Embedder_Docs::title( $source ),
 				'src'      => self::editor_src( $source ),
+				'fb'       => self::editor_fallback( $source ),
 				'hasText'  => $has_text,
 				'hasCover' => $has_cover,
 			);

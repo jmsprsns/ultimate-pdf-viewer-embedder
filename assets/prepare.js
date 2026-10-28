@@ -41,7 +41,14 @@
 		return libPromise;
 	}
 
-	function open( src ) {
+	/** Open a PDF; with a fallback link, try that when the first one fails. */
+	function open( src, fallback ) {
+		const first = openOne( src );
+
+		return fallback ? first.catch( () => openOne( fallback ) ) : first;
+	}
+
+	function openOne( src ) {
 		return load().then( ( lib ) => lib.getDocument( {
 			url: src,
 			cMapUrl: local( C.pdfjs.cmaps ),
@@ -166,14 +173,14 @@
 	/**
 	 * Read a PDF and save its text and cover.
 	 *
-	 * @param {Object} item     { id, url, src } (src: where this browser can load it).
+	 * @param {Object} item     { id, url, src, fb } (src: where this browser can load it; fb: a fallback).
 	 * @param {Object} options  { text: bool, cover: bool, maxPages: number }.
 	 * @return {Promise<Object>} The REST answer ({ text, cover }).
 	 */
 	function prepare( item, options ) {
 		const opts = Object.assign( { text: true, cover: true, maxPages: 2000 }, options || {} );
 
-		return open( item.src ).then( ( pdf ) => Promise.all( [
+		return open( item.src, item.fb ).then( ( pdf ) => Promise.all( [
 			opts.text ? text( pdf, opts.maxPages ) : Promise.resolve( null ),
 			opts.cover ? cover( pdf ) : Promise.resolve( '' ),
 		] ).then( ( results ) => {

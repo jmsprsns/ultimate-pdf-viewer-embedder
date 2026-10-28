@@ -118,6 +118,13 @@ It stores only totals per PDF, per day and per page. No cookies, IP addresses or
 
 == Changelog ==
 
+= 1.0.1 =
+* Searching inside a PDF no longer scrolls the rest of the page.
+* Diagonal watermarks are sized to fit each page, however long the text.
+* Flipbooks on phones use the full screen width, with the page arrows underneath.
+* The popup viewer shows its "More" button only when the toolbar needs it.
+* The editor can read text and covers for PDFs whose address the browser can't load directly.
+
 = 1.0.0 =
 * First release.
 
